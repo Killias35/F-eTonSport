@@ -36,11 +36,11 @@ class ActiviteSeeder extends Seeder
         ];
 
         $images = [
-            "https://images.unsplash.com/photo-1583454110558-8d509756388c", // exemple Bench Press / développé couché 
+            "https://www.docteur-fitness.com/comment-faire-developpe-couche", // exemple Bench Press / développé couché 
             "https://images.unsplash.com/photo-1605296867304-46d5465a13f1", // exemple Squat free weights 
-            "https://images.unsplash.com/photo-1599058917212-25ce376c9501", // exemple Deadlift barbell 
-            "https://images.unsplash.com/photo-1599058917200-1984294d4019", // exemple Pull up bar 
-            "https://images.unsplash.com/photo-1583454110591-94783d5c83b3", // exemple Overhead press / militaire 
+            "https://www.docteur-fitness.com/souleve-de-terre", // exemple Deadlift barbell 
+            "https://www.fitnessmith.fr/progresser-aux-tractions-de-0-a-5-tractions/", // exemple Pull up bar 
+            "https://www.setforset.com/blogs/news/overhead-press-how-to-muscles-worked-benefits-variations", // exemple Overhead press / militaire 
             "https://images.unsplash.com/photo-1599058917219-96f22902f217", // exemple Dumbbell row 
             "https://images.unsplash.com/photo-1583454110457-aec0f4e4e5e9", // exemple Plank / gainage 
         ];
