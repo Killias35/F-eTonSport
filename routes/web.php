@@ -24,6 +24,10 @@ Route::middleware('auth')->group(function () {
     
     Route::get('/activites', [ActiviteController::class, 'index'])->name('activites.index');
     Route::get('/activites/create', [ActiviteController::class, 'create'])->name('activites.create');
+    Route::get('/activites/mines', [ActiviteController::class, 'mines'])->name('activites.mines');
+    Route::get('/activites/public', [ActiviteController::class, 'public'])->name('activites.public');
+
+    Route::post('/activites/favorite', [ActiviteController::class, 'favorite'])->name('activites.favorite');
     Route::post('/activites/create', [ActiviteController::class, 'store'])->name('activites.store');
     Route::get('/activites/edit/{id}', [ActiviteController::class, 'edit'])->name('activites.edit');
     Route::put('/activites/update/{id}', [ActiviteController::class, 'update'])->name('activites.update');

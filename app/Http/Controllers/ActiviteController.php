@@ -8,18 +8,33 @@ use Illuminate\Support\Facades\Redirect;
 
 class ActiviteController extends Controller
 {
-    public function index(Request $request)
+    public function index()
+    {
+        return view('activites.index');
+    }
+
+    public function mines(Request $request)
     {
         $user_id = $request->user()->id;
-
         $activites = Activite::where('user_id', $user_id)->get();
 
-        return view('activites.index', compact('activites'));
+        return view('activites.mines', compact('activites'));
     }
 
     public function create()
     {
         return view('activites.create');
+    }
+
+    public function public(Request $request)
+    {
+        $activites = Activite::all();
+        $user = $request->user();
+        foreach ($activites as $activite) {
+            $activite->favorited = $user->hasFavoriteActivite($activite->id);
+        }
+
+        return view('activites.public', compact('activites'));
     }
 
     public function store(Request $request)
@@ -45,11 +60,24 @@ class ActiviteController extends Controller
         return Redirect()->route('activites.index');
     }
 
-    public function edit($id)
+    public function favorite(Request $request)
     {
-        $activite = Activite::where('id', $id)->first();
+        $request->validate([
+            'activite_id' => 'required',
+        ]);
 
-        return view('activites.edit', compact('activite'));
+        $activite_id = $request->input('activite_id');
+
+        auth()->user()->activitesFavorites()->toggle($activite_id);
+        return back();
+    }
+
+    public function edit(Request $request, $id)
+    {
+        $user = $request->user();
+        $activite = Activite::where('id', $id)->first();
+        $canEdit = $activite->user_id == $user->id;
+        return view('activites.edit', compact('activite', 'canEdit'));
     }
 
     public function update(Request $request, $id)
@@ -59,11 +87,18 @@ class ActiviteController extends Controller
             'description' => 'required',
         ]);
 
+        $activite = Activite::where('id', $id)->first();
+        $user = $request->user();
+
+        if ($activite->user_id != $user->id) {  // ne peut pas updater une activite dont il n'est pas le proprietaire
+            return Redirect()->route('activites.index');
+        }
+
         $nom = $request->input('nom');
         $description = $request->input('description');
         $image = $request->input('image');
 
-        Activite::where('id', $id)->update([
+        $activite->update([
             'nom' => $nom,
             'description' => $description,
             'image' => $image,
@@ -72,9 +107,14 @@ class ActiviteController extends Controller
         return Redirect()->route('activites.index');
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        Activite::where('id', $id)->delete();
+        $user = $request->user();
+        $activite = Activite::where('id', $id)->first();
+        if ($activite->user_id != $user->id) {  // ne peut pas supprimer une activite dont il n'est pas le proprietaire
+            return Redirect()->route('activites.index');
+        }
+        $activite->delete();
 
         return Redirect()->route('activites.index');
     }

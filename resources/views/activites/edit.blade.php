@@ -12,22 +12,27 @@
                 @csrf
                 @method('PUT')
 
+                @php
+                    $disabled = $canEdit ? '' : 'disabled';
+                    $color = $canEdit ? 'text-white' : 'text-gray-400';
+                @endphp
+
                 <div>
                     <label class="block text-sm text-gray-300 mb-1">Nom</label>
-                    <input type="text" name="nom" value="{{ $activite->nom }}" required
-                           class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+                    <input type="text" name="nom" value="{{ $activite->nom }}" required {{ $disabled }}
+                           class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 {{ $color }}">
                 </div>
 
                 <div>
                     <label class="block text-sm text-gray-300 mb-1">Image (URL)</label>
-                    <input type="text" name="image" value="{{ $activite->image }}"
-                           class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+                    <input type="text" name="image" value="{{ $activite->image }}" {{ $disabled }}
+                           class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 {{ $color }}">
                 </div>
 
                 <div>
                     <label class="block text-sm text-gray-300 mb-1">Description</label>
-                    <textarea name="description" rows="6" required
-                              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white resize-none">{{ $activite->description }}</textarea>
+                    <textarea name="description" rows="6" required {{ $disabled }}
+                              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 {{ $color }} resize-none">{{ $activite->description }}</textarea>
                 </div>
 
                 <div class="flex justify-end gap-4">
@@ -36,9 +41,11 @@
                         Annuler
                     </a>
 
-                    <button class="px-6 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-semibold">
-                        Enregistrer
-                    </button>
+                    @if ($canEdit)
+                        <button class="px-6 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-semibold">
+                            Enregistrer
+                        </button>
+                    @endif
                 </div>
             </form>
         </div>

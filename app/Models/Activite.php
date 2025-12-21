@@ -26,4 +26,12 @@ class Activite extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function usersWhoFavorited()
+    {
+        return $this->belongsToMany(
+            User::class,
+            'activite_user_favorite'
+        )->withTimestamps();
+    }
 }

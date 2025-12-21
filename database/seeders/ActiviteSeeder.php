@@ -6,6 +6,9 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 use App\Models\Activite;
+use App\Models\User;
+
+use Illuminate\Support\Facades\Hash;
 
 class ActiviteSeeder extends Seeder
 {
@@ -14,7 +17,13 @@ class ActiviteSeeder extends Seeder
      */
     public function run(): void
     {
-        $user_id = 1;
+        $user = User::create([
+            'name' => 'Activites Systeme',
+            'email' => 'testActivites@gmail.com',
+            'role' => 'super_admin',
+            'pseudo' => 'Activites Systeme',
+            'password' => Hash::make('testActivites'),
+        ]);
         $noms = [
             'Développé couché',
             'Squat',
@@ -51,7 +60,7 @@ class ActiviteSeeder extends Seeder
                 'nom' => $noms[$i],
                 'description' => $descriptions[$i],
                 'image' => $images[$i],
-                'user_id' => $user_id,
+                'user_id' => $user->id,
             ]);
         }
     }

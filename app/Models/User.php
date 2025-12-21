@@ -46,4 +46,19 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function activitesFavorites()
+    {
+        return $this->belongsToMany(
+            Activite::class,
+            'activite_user_favorite'
+        )->withTimestamps();
+    }
+
+    public function hasFavoriteActivite(int $activiteId): bool
+    {
+        return $this->activitesFavorites()
+            ->where('activite_id', $activiteId)
+            ->exists();
+    }
 }
