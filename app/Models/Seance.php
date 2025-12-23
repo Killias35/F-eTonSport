@@ -19,4 +19,9 @@ class Seance extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function activites()
+    {
+        return $this->hasMany(ActiviteSeance::class);
+    }
+
 }

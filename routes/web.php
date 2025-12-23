@@ -19,6 +19,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/seances/coach', [SeanceController::class, 'coach'])->name('seances.coach');
     Route::get('/seances/mines', [SeanceController::class, 'mines'])->name('seances.mines');
     Route::get('/seances/create', [SeanceController::class, 'create'])->name('seances.create');
+    Route::get('/seances/createSpecial', [SeanceController::class, 'createSpecial'])->name('seances.createSpecial');
     Route::get('/seances/edit/{id}', [SeanceController::class, 'edit'])->name('seances.edit');
     
     Route::post('/seances/done', [SeanceController::class, 'done'])->name('seances.done');

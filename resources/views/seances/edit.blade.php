@@ -1,7 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-bold text-2xl text-white-800 leading-tight">
-            Modifier la séance
+            @if ($canEdit)
+                Modifier la séance            
+            @else
+                Voir la séance
+            @endif
         </h2>
     </x-slot>
 

@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Seance;
-use App\Models\SeancesDone;
-use Illuminate\Support\Facades\Redirect;
+use App\Models\ActiviteSeance;
+use App\Models\Activite;
+use Illuminate\Support\Str;
 
 class SeanceController extends Controller
 {
@@ -40,24 +41,63 @@ class SeanceController extends Controller
         return view('seances.create');
     }
 
+    public function createSpecial()
+    {
+        $activites = Activite::select('id', 'nom')->get();
+        return view('seances.createSpecial', compact('activites'));
+    }
+
     public function store(Request $request)
     {
         $request->validate([
             'titre' => 'required',
             'description' => 'required',
-            'user_id' => 'required'
+            'exercises' => 'required',
         ]);
 
-        $titre = $request->input('titre');
-        $description = $request->input('description');
-        $image = $request->input('image');
         $user_id = $request->user()->id;
+        $titre = $request->input('titre');
+        $image = $request->input('image');
+        $description = $request->input('description');
+        $exercises = $request->input('exercises');
+        $exercises = json_decode($exercises, true);
 
-        Seance::create([
+        $seance = Seance::create([
             'titre' => $titre,
             'description' => $description,
             'image' => $image,
             'user_id' => $user_id
+        ]);
+
+        foreach ($exercises as $exercise) {
+            ActiviteSeance::create([
+                'seance_id' => $seance->id,
+                'activite_id' => $exercise['id'],
+                'quantity' => $exercise['quantity'],
+                'difficulty' => $exercise['difficulty'],
+                'poids' => $exercise['poids']
+            ]);
+        }
+
+        // Récupérer toutes les activités liées à la séance
+        $activiteSeances = $seance->activites()->get(); // Assure-toi d’avoir la relation 'activites' sur Seance
+
+        // Remplacer les placeholders {{e1}}, {{e2}}, etc.
+        $updatedDescription = $description;
+
+        foreach ($exercises as $key => $exercise) {
+            $activite = $activiteSeances->firstWhere('activite_id', $exercise['id']);
+            if ($activite) {
+                // Exemple de rendu : "Squat · 10 reps · diff 3"
+                $nomActivite = $activite->nom ?? Activite::find($exercise['id'])->nom;
+                $text = "{$nomActivite} · {$exercise['quantity']} reps · diff {$exercise['difficulty']}";
+                $updatedDescription = Str::replace("{{{$key}}}", $text, $updatedDescription);
+            }
+        }
+
+        // Mettre à jour la séance
+        $seance->update([
+            'description' => $updatedDescription
         ]);
 
         return Redirect()->route('seances.index');
