@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use App\Models\Seance;
 use App\Models\ActiviteSeance;
@@ -23,6 +24,8 @@ class SeanceService
             return [];
         }
         $seances = Seance::where('user_id', $user->coach->id)->get();
+        $seances = self::parseDescriptions($seances);
+
         foreach ($seances as $seance) {
             $seance->done = $user->hasSeanceDone($seance->id);
         }
@@ -33,8 +36,30 @@ class SeanceService
     {
         $user_id = $user->id;
         $seances = Seance::where('user_id', $user_id)->get();
+        $seances = self::parseDescriptions($seances);
         return $seances;
     }
+
+    public static function parseDescriptions(Collection $seances){
+        $newSeances = [];
+        foreach ($seances as $seance) {
+            $newSeances[] = self::parseDescription($seance);
+        }
+        return $newSeances;
+    }
+    
+    public static function parseDescription(Seance $seance){
+        $exercises = [];
+        foreach ($seance->activites as $activite) {
+            if (str_contains($seance->description, "{{$activite->id}}")) {
+                $activite->nom = $activite->activite->nom;
+                $exercises[] = $activite;
+            }
+        }
+        $seance->exercises = $exercises;
+        return $seance;   
+    }
+    
     
     public static function getActivites()
     {
@@ -73,7 +98,7 @@ class SeanceService
             $activite = $activiteSeances[$index];
             if ($activite) {
                 $text = $activite->id;
-                $updatedDescription = Str::replace("{{{$key}}}", "{{$text}}", $updatedDescription);
+                $updatedDescription = Str::replace("{{{$key}}}", "{{{$text}}}", $updatedDescription);
             }
         }
 

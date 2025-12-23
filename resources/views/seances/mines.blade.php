@@ -12,7 +12,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            @if($seances->isEmpty())
+            @if(count($seances) === 0)
                 <p class="text-white-400 text-center text-lg mt-8">Aucune séance n’a encore été créée.</p>
             @else
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -23,7 +23,7 @@
                                     {{ $seance->titre }}
                                 </h3>
 
-                                <p class="mt-2 text-sm text-gray-400 line-clamp-3">
+                                <p class="mt-2 text-sm text-gray-400 line-clamp-3 description-{{ $seance->id }}">
                                     {{ $seance->description }}
                                 </p>
                             </div>
@@ -50,4 +50,19 @@
             @endif
         </div>
     </div>
+
+    <script>
+        const seances = @json($seances);
+
+        seances.forEach(seance => {
+            const description = document.querySelector(`.description-${seance.id}`);
+            seance.exercises.forEach(exercise => {
+                description.innerHTML = description.innerHTML.replace(
+                    `@{{${exercise.id}}}`, 
+                    `<span data-key="${exercise.id}">${exercise.nom} · ${exercise.quantity} · ${exercise.difficulty} ·${exercise.poids} </span>`);
+                    console.log(`@{{${exercise.id}}}`);
+                });
+
+        })
+    </script>
 </x-app-layout>

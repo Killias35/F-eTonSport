@@ -13,7 +13,7 @@ use App\Http\Services\SeanceService;
 class SeanceController extends Controller
 {
 
-    public function index(Request $request)
+    public function index()
     {
         return view('seances.index');
     }
@@ -112,7 +112,7 @@ class SeanceController extends Controller
         if ($seance->user_id != $user->id) {  // ne peut pas supprimer une seance dont il n'est pas le proprietaire
             return Redirect()->route('seances.index');
         }
-        
+
         SeanceService::destroy($id);
         return Redirect()->route('seances.index');
     }

@@ -64,4 +64,19 @@
             @endif
         </div>
     </div>
+    
+    <script>
+        const seances = @json($seances);
+
+        seances.forEach(seance => {
+            const description = document.querySelector(`.description-${seance.id}`);
+            seance.exercises.forEach(exercise => {
+                description.innerHTML = description.innerHTML.replace(
+                    `@{{${exercise.id}}}`, 
+                    `<span data-key="${exercise.id}">${exercise.nom} · ${exercise.quantity} · ${exercise.difficulty} ·${exercise.poids} </span>`);
+                    console.log(`@{{${exercise.id}}}`);
+                });
+
+        })
+    </script>
 </x-app-layout>
