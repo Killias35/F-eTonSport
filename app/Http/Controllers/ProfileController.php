@@ -37,6 +37,19 @@ class ProfileController extends Controller
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
+    public function stats(Request $request)
+    {
+        $user = $request->user();
+        // Charger les relations nécessaires
+        $user->load([
+            'coach',               // Le coach de l'utilisateur
+            'doneSeances.activites.activite', // Séances effectuées et activités
+            'seances.activites.activite'      // Séances créées par l'utilisateur et activités
+        ]);
+
+        return view('profile.statistiques', compact('user'));
+    }
+
     /**
      * Delete the user's account.
      */

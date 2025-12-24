@@ -56,24 +56,24 @@
                     </div>
                 </a>
 
-                <!-- Séances réalisées (future feature) -->
-                <div
-                    class="relative overflow-hidden rounded-3xl p-8
-                           bg-gradient-to-br from-slate-200 to-slate-300
-                           text-slate-600 shadow-inner cursor-not-allowed">
+                <!-- Statistiques -->
+                <a href="{{ route('profile.stats') }}"
+                   class="group relative overflow-hidden rounded-3xl p-8
+                          bg-gradient-to-t from-green-600 to-emerald-400
+                          text-white shadow-lg hover:shadow-2xl transition">
 
-                    <div class="absolute inset-0 bg-white/40"></div>
+                    <div class="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition"></div>
 
                     <div class="relative z-10 text-center">
-                        <div class="text-6xl mb-4 opacity-70">⏱️</div>
+                        <div class="text-6xl mb-4">📊</div>
                         <h3 class="text-2xl font-bold mb-2">
-                            Séances réalisées
+                            Seances réalisés & Statistiques
                         </h3>
-                        <p class="text-sm text-slate-500">
-                            Historique et statistiques à venir
+                        <p class="text-sm text-orange-100">
+                            Consulte tes séances et tes statistiques
                         </p>
                     </div>
-                </div>
+                </a>
 
             </div>
         </div>

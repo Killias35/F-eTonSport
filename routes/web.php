@@ -14,6 +14,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/profile/stats', [ProfileController::class, 'stats'])->name('profile.stats');    
    
     Route::get('/seances', [SeanceController::class, 'index'])->name('seances.index');
     Route::get('/seances/coach', [SeanceController::class, 'coach'])->name('seances.coach');
