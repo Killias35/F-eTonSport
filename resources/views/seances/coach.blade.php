@@ -14,7 +14,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            @if($seances->isEmpty())
+            @if(count($seances) === 0)
                 <p class="text-gray-400 text-center text-lg mt-12">
                     Aucune séance n’est encore disponible pour le moment.
                 </p>

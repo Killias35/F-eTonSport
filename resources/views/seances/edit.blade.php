@@ -1,7 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-bold text-2xl text-white-800 leading-tight">
-            Modifier la séance
+            @if ($canEdit)
+                Modifier la séance
+            @else
+                Voir la séance
+            @endif
         </h2>
     </x-slot>
 
@@ -11,11 +15,6 @@
                 <form method="POST" action="{{ route('seances.update', $seance->id) }}" id="seance-form">
                     @csrf
                     @method('PUT')
-
-                    @php
-                        $disabled = $canEdit ? '' : 'disabled';
-                        $color = $canEdit ? 'text-white' : 'text-gray-400';
-                    @endphp
 
                     {{-- TITRE --}}
                     <div class="mb-6">
@@ -30,7 +29,11 @@
                     {{-- EDITEUR --}}
                     <div class="mb-6 relative">
                         <label class="block text-gray-300 font-semibold mb-2">
-                            Décris ta séance (utilise # pour ajouter un exercice)
+                            @if ($canEdit)
+                                Décris ta séance (utilise # pour ajouter un exercice)
+                            @else
+                                Description de la séance
+                            @endif
                         </label>
 
                         <div
@@ -45,11 +48,13 @@
                         <input type="hidden" name="exercises" id="exercises">
                     </div>
 
-                    <div class="flex justify-end">
-                        <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-2xl shadow-lg transition">
-                            Enregistrer la séance
-                        </button>
-                    </div>
+                    @if ($canEdit)
+                        <div class="flex justify-end">
+                            <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-2xl shadow-lg transition">
+                                Enregistrer la séance
+                            </button>
+                        </div>
+                    @endif
                 </form>
             </div>
         </div>

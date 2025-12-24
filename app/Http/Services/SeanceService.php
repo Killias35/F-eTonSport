@@ -165,7 +165,7 @@ class SeanceService
 
     public static function done(User $user, int $id)
     {
-        if (contains($user->coach()->seances()->pluck('id')->toArray(), $id)) {     // si la seance appartient au coach
+        if (in_array($id, $user->coach->seances()->pluck('id')->toArray())) {     // si la seance appartient au coach
             $user->doneSeances()->toggle($id);
         }
     }
