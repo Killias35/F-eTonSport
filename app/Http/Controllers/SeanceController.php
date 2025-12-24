@@ -59,16 +59,18 @@ class SeanceController extends Controller
 
         SeanceService::create($user, $titre, $image, $description, $exercises);
 
-        return Redirect()->route('seances.index');
+        return Redirect()->route('seances.mines');
     }
 
     public function edit(Request $request, $id)
     {
         $user = $request->user();
         $seance = SeanceService::get($id);
+        $activites = SeanceService::getActivites();
+
         $canEdit = $seance->user_id == $user->id;
 
-        return view('seances.edit', compact('seance', 'canEdit'));
+        return view('seances.edit', compact('seance', 'activites', 'canEdit'));
     }
 
     public function update(Request $request, $id)
@@ -76,18 +78,21 @@ class SeanceController extends Controller
         $request->validate([
             'titre' => 'required',
             'description' => 'required',
+            'exercises' => 'required',
         ]);
 
         $user = $request->user();
         $titre = $request->input('titre');
-        $description = $request->input('description');
         $image = $request->input('image');
+        $description = $request->input('description');
+        $exercises = $request->input('exercises');
+        $exercises = json_decode($exercises, true);
 
         $seance = SeanceService::get($id);
         if ($seance->user_id == $user->id) {  // ne peut pas updater une seance dont il n'est pas le proprietaire
-            SeanceService::update($id, $titre, $description, $image);
+            SeanceService::update($id, $titre, $description, $exercises, $image);
         }
-        return Redirect()->route('seances.index');
+        return Redirect()->route('seances.mines');
     }
 
     public function done(Request $request)
@@ -114,6 +119,6 @@ class SeanceController extends Controller
         }
 
         SeanceService::destroy($id);
-        return Redirect()->route('seances.index');
+        return back();
     }
 }

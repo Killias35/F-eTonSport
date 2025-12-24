@@ -35,7 +35,7 @@
 
                         {{-- HIDDEN INPUTS --}}
                         <input type="hidden" name="description" id="description">
-                        <input type="hidden" name="exercises" id="exercises" value="test">
+                        <input type="hidden" name="exercises" id="exercises">
                     </div>
 
                     <div class="flex justify-end">
@@ -136,12 +136,10 @@ function insertExercise(activity) {
     span.className =
         'inline-flex items-center px-3 py-1 mx-1 rounded-lg bg-red-600 text-white text-sm cursor-pointer select-none';
 
-    span.textContent = `${activity.nom} · 10x4 · rpe 5 · `;
+    span.textContent = ` ${activity.nom} · 10x4 · rpe 5 · `;
     span.addEventListener('click', () => editExercise(span));
 
     editor.appendChild(span);
-    editor.appendChild(document.createTextNode(' '));
-
     autocomplete.classList.add('hidden');
 }
 
@@ -158,12 +156,12 @@ function editExercise(span) {
     if (poids !== null) data.poids = poids;
 
     const activity = activites.find(a => a.id === data.id);
-    span.textContent = `${activity.nom} · ${data.quantity} · ${data.difficulty} · ${data.poids}`;
+    span.textContent = ` ${activity.nom} · ${data.quantity} · ${data.difficulty} · ${data.poids} `;
     console.log(state.exercises);
 }
 
 form.addEventListener('submit', () => {
-    let content = editor.innerHTML;
+    let content = editor.innerHTML.replace(/&nbsp;/g, ' ');
 
     Object.keys(state.exercises).forEach(key => {
         const regex = new RegExp(
@@ -175,7 +173,6 @@ form.addEventListener('submit', () => {
 
     document.getElementById('description').value = content;
     document.getElementById('exercises').value = JSON.stringify(state.exercises);
-    console.log(document.getElementById('exercises').value);
 });
 </script>
 </x-app-layout>

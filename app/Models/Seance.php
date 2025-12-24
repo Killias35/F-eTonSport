@@ -24,4 +24,11 @@ class Seance extends Model
         return $this->hasMany(ActiviteSeance::class);
     }
 
+    public function deleteAllActivitesOfSeance()
+    {
+        foreach ($this->activites as $activite) {
+            $activite->delete();
+        }
+    }
+
 }

@@ -10,7 +10,7 @@
             <form method="POST" action="{{ route('activites.update', $activite->id) }}"
                   class="bg-gray-900 border border-gray-700 rounded-2xl shadow-xl p-8 space-y-6">
                 @csrf
-                @method('PUT')
+                @method('')
 
                 @php
                     $disabled = $canEdit ? '' : 'disabled';

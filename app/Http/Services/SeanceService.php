@@ -18,6 +18,13 @@ class SeanceService
         return Seance::all();
     }
 
+    public static function get($id)
+    {
+        $seance = Seance::where('id', $id)->first();
+        $seance = self::parseDescription($seance);
+        return $seance;
+    }
+
     public static function seancesCoach(User $user)
     {
         if ($user->coach == null) {
@@ -53,6 +60,7 @@ class SeanceService
         foreach ($seance->activites as $activite) {
             if (str_contains($seance->description, "{{$activite->id}}")) {
                 $activite->nom = $activite->activite->nom;
+                $activite->activite_id = $activite->activite->id;
                 $exercises[] = $activite;
             }
         }
@@ -65,6 +73,11 @@ class SeanceService
     {
         $activites = Activite::select('id', 'nom')->get();
         return $activites;
+    }
+
+    public static function deleteAllActivitesOfSeance(Seance $seance)
+    {
+        $seance->deleteAllActivitesOfSeance();
     }
 
     public static function create(User $user, string $titre, string | null $image, string $description, array $exercises)
@@ -110,20 +123,43 @@ class SeanceService
         return $seance;
     }
 
-    public static function get($id)
+    public static function update(int $id, string $titre, string $description, array $exercises, string | null $image)
     {
         $seance = Seance::where('id', $id)->first();
-        return $seance;
-    }
+        self::deleteAllActivitesOfSeance($seance);
+        
+        foreach ($exercises as $exercise) {
+            ActiviteSeance::create([
+                'seance_id' => $seance->id,
+                'activite_id' => $exercise['id'],
+                'quantity' => $exercise['quantity'],
+                'difficulty' => $exercise['difficulty'],
+                'poids' => $exercise['poids']
+            ]);
+        }
 
-    public static function update(int $id, string $titre, string $description, string | null $image)
-    {
-        $seance = Seance::where('id', $id)->first();
+        // Récupérer toutes les activités liées à la séance
+        $activiteSeances = $seance->activites()->get(); // Assure-toi d’avoir la relation 'activites' sur Seance
+
+        // Remplacer les placeholders {{e1}}, {{e2}}, etc.
+        $updatedDescription = $description;
+
+        foreach ($exercises as $key => $exercise) {
+            $index = intval($key);
+            $activite = $activiteSeances[$index];
+            if ($activite) {
+                $text = $activite->id;
+                $updatedDescription = Str::replace("{{{$key}}}", "{{{$text}}}", $updatedDescription);
+            }
+        }
+
+        // Mettre à jour la séance
         $seance->update([
             'titre' => $titre,
-            'description' => $description,
             'image' => $image,
+            'description' => $updatedDescription
         ]);
+
         return $seance;
     }
 
