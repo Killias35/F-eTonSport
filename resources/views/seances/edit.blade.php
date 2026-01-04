@@ -91,12 +91,30 @@ function getCaretPosition() {
     return rects.length ? rects[0] : null;
 }
 
+editor.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        e.preventDefault(); // empêche le div automatique
+
+        const range = window.getSelection().getRangeAt(0);
+
+        const br = document.createElement('br'); // ou un span vide si tu veux
+        range.insertNode(br);
+
+        // Avancer le curseur après le br
+        range.setStartAfter(br);
+        range.setEndAfter(br);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+    }
+});
+
 editor.addEventListener('keyup', () => {
     const selection = window.getSelection();
     if (!selection.rangeCount) return;
 
     const text = editor.innerText;
-    const match = text.match(/#(\w*)$/);
+    const match = text.match(/#(\w*)/);
 
     if (!match) {
         autocomplete.classList.add('hidden');
@@ -148,8 +166,12 @@ function insertExercise(activity, replace=true, getSpan=false) {
     };
 
     if (replace) {
-        // Supprime le #mot tapé
-        editor.innerHTML = editor.innerHTML.replace(/#\w*$/, '');
+        const matches = [...editor.innerText.matchAll(/#(\w*)/g)];
+        let pos = 0;
+        matches.forEach(found => {
+            pos = editor.innerHTML.indexOf(found[0]);
+            editor.innerHTML = editor.innerHTML.replace(found[0], '');
+        });
     }
 
     const span = document.createElement('span');

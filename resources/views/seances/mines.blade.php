@@ -60,8 +60,10 @@
                 description.innerHTML = description.innerHTML.replace(
                     `@{{${exercise.id}}}`, 
                     `<span data-key="${exercise.id}">${exercise.nom} · ${exercise.quantity} · ${exercise.difficulty} ·${exercise.poids} </span>`);
-                    console.log(`@{{${exercise.id}}}`);
                 });
+            description.innerHTML = description.textContent.replace(/([^\r\n])\r?\n/g, '$1<br>');
+            console.log(description.innerHTML);
+
 
         })
     </script>
